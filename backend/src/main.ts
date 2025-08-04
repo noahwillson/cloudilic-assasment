@@ -10,9 +10,10 @@ async function bootstrap() {
     origin:
       process.env.NODE_ENV === "production"
         ? [
-            "https://cloudilic-assasment-c4uxu0ewv-noah-willsons-projects.vercel.app",
-            "https://cloudilic-assasment-2cam3dyev-noah-willsons-projects.vercel.app",
-            "https://cloudilic-assasment.vercel.app",
+            "https://frontend-lc4bxl9w7-noah-willsons-projects.vercel.app",
+            "https://frontend-236dpmc7g-noah-willsons-projects.vercel.app",
+            "https://frontend-a9r4hvzpt-noah-willsons-projects.vercel.app",
+            "https://frontend-five-gamma-82.vercel.app",
             "https://*.vercel.app",
           ]
         : ["http://localhost:5173", "http://localhost:3000"],

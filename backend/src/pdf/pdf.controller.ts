@@ -8,7 +8,6 @@ import {
   UseInterceptors,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
@@ -37,14 +36,15 @@ export class PdfController {
   async uploadFile(
     @UploadedFile(
       new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: "application/pdf" }),
-        ],
+        validators: [new MaxFileSizeValidator({ maxSize: 10 * 1024 * 1024 })],
       })
     )
     file: Express.Multer.File
   ): Promise<PdfDocument> {
+    // Manual PDF validation
+    if (!file.mimetype || !file.mimetype.includes("pdf")) {
+      throw new Error("Only PDF files are allowed");
+    }
     return await this.pdfService.upload(file);
   }
 
