@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from "@nestjs/common";
-import * as pdfParse from "pdf-parse";
+import pdfParse from "pdf-parse";
 import { v4 as uuidv4 } from "uuid";
 import { MemoryStoreService } from "../shared/memory-store.service";
 import { PdfDocument } from "../types/workflow";
