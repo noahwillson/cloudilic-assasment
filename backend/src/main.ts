@@ -10,8 +10,10 @@ async function bootstrap() {
     origin:
       process.env.NODE_ENV === "production"
         ? [
-            "https://your-frontend-domain.vercel.app",
-            "https://your-domain.vercel.app",
+            "https://cloudilic-assasment-c4uxu0ewv-noah-willsons-projects.vercel.app",
+            "https://cloudilic-assasment-2cam3dyev-noah-willsons-projects.vercel.app",
+            "https://cloudilic-assasment.vercel.app",
+            "https://*.vercel.app",
           ]
         : ["http://localhost:5173", "http://localhost:3000"],
     credentials: true,
@@ -22,7 +24,7 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
 
   const config = new DocumentBuilder()
