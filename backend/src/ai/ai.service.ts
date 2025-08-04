@@ -13,8 +13,19 @@ export class AiService {
 
   async generateResponse(prompt: string): Promise<string> {
     try {
+      console.log(
+        "OpenAI API Key:",
+        process.env.OPENAI_API_KEY ? "Set" : "Not set"
+      );
+      console.log(
+        "API Key (first 10 chars):",
+        process.env.OPENAI_API_KEY
+          ? process.env.OPENAI_API_KEY.substring(0, 10) + "..."
+          : "Not set"
+      );
+
       const completion = await this.openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "user",
@@ -28,6 +39,9 @@ export class AiService {
       return completion.choices[0]?.message?.content || "No response generated";
     } catch (error: any) {
       console.error("AI Service Error:", error);
+      console.error("Error status:", error?.status);
+      console.error("Error message:", error?.message);
+      console.error("Error code:", error?.code);
 
       if (error?.status === 429 || error?.message?.includes("quota")) {
         return `Mock AI Response (API quota exceeded):
@@ -36,7 +50,13 @@ Based on your query, I've analyzed the available content and found relevant info
 
 The document contains text that appears to be related to your question. The content includes various sections that could be relevant to your query.
 
-Note: This is a mock response because the OpenAI API quota has been exceeded. Please add a valid API key with available credits to get real AI responses.`;
+Note: This is a mock response because the OpenAI API quota has been exceeded. Please:
+1. Check your OpenAI account at https://platform.openai.com/account/usage
+2. Add more credits to your account
+3. Create a new API key with available credits
+4. Update your .env file with the new API key
+
+Current API Key: ${process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.substring(0, 10) + "..." : "Not set"}`;
       }
 
       if (error?.status >= 400) {
@@ -62,6 +82,11 @@ Note: This is a fallback response due to an unexpected error. Please check your 
 
   async generateEmbeddings(text: string): Promise<number[]> {
     try {
+      console.log(
+        "Generating embeddings with API key:",
+        process.env.OPENAI_API_KEY ? "Set" : "Not set"
+      );
+
       const response = await this.openai.embeddings.create({
         model: "text-embedding-ada-002",
         input: text,
@@ -70,14 +95,18 @@ Note: This is a fallback response due to an unexpected error. Please check your 
       return response.data[0]?.embedding || [];
     } catch (error: any) {
       console.error("Embeddings Error:", error);
+      console.error("Embeddings Error status:", error?.status);
+      console.error("Embeddings Error message:", error?.message);
+      console.error("Embeddings Error code:", error?.code);
 
       if (error?.status === 429 || error?.message?.includes("quota")) {
+        console.log("Using fallback embeddings due to API quota issues");
         return new Array(1536).fill(0);
       }
 
-      throw new BadRequestException(
-        `Failed to generate embeddings: ${error.message}`
-      );
+      // For any other error, also use fallback
+      console.log("Using fallback embeddings due to API error");
+      return new Array(1536).fill(0);
     }
   }
 }

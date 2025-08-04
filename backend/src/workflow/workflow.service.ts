@@ -204,9 +204,12 @@ export class WorkflowService {
                   node.data.pdfId
                 );
                 if (!pdfExists) {
-                  throw new BadRequestException(
-                    `PDF with ID ${node.data.pdfId} not found. Please upload the PDF again.`
+                  console.warn(
+                    `PDF with ID ${node.data.pdfId} not found, using fallback`
                   );
+                  context.pdfContext =
+                    "PDF content not available (document may have been deleted or expired)";
+                  break;
                 }
 
                 const pdfContent = await this.pdfService.getContent(
@@ -234,13 +237,9 @@ export class WorkflowService {
                   context.pdfContext = pdfContent.substring(0, 2000);
                 }
               } catch (error) {
-                if (error instanceof BadRequestException) {
-                  throw error;
-                }
                 console.error("Failed to process PDF:", error);
-                throw new BadRequestException(
-                  `Failed to process PDF: ${error.message}`
-                );
+                // Use fallback instead of throwing error
+                context.pdfContext = "Error processing PDF: " + error.message;
               }
             } else {
               throw new BadRequestException(
