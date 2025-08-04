@@ -217,7 +217,7 @@ npm run lint:backend     # Lint backend only
 
 ### AI Integration
 
-- **OpenAI API**: GPT-3.5-turbo for intelligent responses
+- **OpenAI API**: GPT-4o-mini for intelligent responses
 - **Context-Aware**: Combines user queries with relevant PDF content
 - **Error Handling**: Graceful fallbacks for API limitations
 
