@@ -6,8 +6,19 @@ import {
   ExecuteWorkflowResponse,
 } from "../types/workflow";
 
-// Use environment variable or default to localhost
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// Use a stable backend URL that doesn't change with deployments
+const getApiBaseUrl = () => {
+  // In production, use a stable backend URL
+  if (import.meta.env.PROD) {
+    // Use the custom domain that never changes
+    return "https://cloudilic-backend.vercel.app";
+  }
+
+  // In development, use localhost
+  return "http://localhost:3000";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,

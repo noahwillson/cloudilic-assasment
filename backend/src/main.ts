@@ -7,16 +7,27 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? [
-            "https://frontend-lc4bxl9w7-noah-willsons-projects.vercel.app",
-            "https://frontend-236dpmc7g-noah-willsons-projects.vercel.app",
-            "https://frontend-a9r4hvzpt-noah-willsons-projects.vercel.app",
-            "https://frontend-five-gamma-82.vercel.app",
-            "https://*.vercel.app",
-          ]
-        : ["http://localhost:5173", "http://localhost:3000"],
+    origin: function (origin, callback) {
+      const isDev = process.env.NODE_ENV !== "production";
+
+      const devOrigins = ["http://localhost:5173", "http://localhost:3000"];
+
+      const vercelRegex = /^https:\/\/([a-z0-9-]+\.)*vercel\.app$/;
+
+      if (!origin) {
+        // Allow non-browser clients like Postman or curl
+        return callback(null, true);
+      }
+
+      if (
+        (isDev && devOrigins.includes(origin)) ||
+        (!isDev && vercelRegex.test(origin))
+      ) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   });
 
