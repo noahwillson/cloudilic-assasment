@@ -6,7 +6,22 @@ import {
   ExecuteWorkflowResponse,
 } from "../types/workflow";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// Use the current domain for API calls in production
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  // In production, use the same domain with /api prefix
+  if (import.meta.env.PROD) {
+    return "/api";
+  }
+
+  // In development, use localhost
+  return "http://localhost:3000";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
